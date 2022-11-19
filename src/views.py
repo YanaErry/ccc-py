@@ -1,8 +1,24 @@
-"""View element of CharacterEncoding(tkinter)"""
-
+"""View element of ccc-py(tkinter)"""
 import tkinter as tk
+import tkinter.font
 from abc import abstractmethod
+from dataclasses import dataclass
 from tkinter import ttk
+from typing import Literal, TypeAlias
+
+# TypeAlias of tk(ttk)'s widget
+Button: TypeAlias = dict[str, tk.Button | ttk.Button]
+Combobox: TypeAlias = dict[str, ttk.Combobox]
+
+
+@dataclass
+class Font:
+    family: str
+    size: int
+    slant: Literal["italic", "roman"] = "roman"
+    weight: Literal["bold", "normal"] = "normal"
+    underline: bool = False
+    overstrike: bool = False
 
 
 class View(tk.Frame):
@@ -33,9 +49,9 @@ class Form(View):
     def __init__(self, master: tk.Frame) -> None:
         super().__init__()
         self.master = master
-        self.buttons: dict[str, ttk.Button] = dict()
-        self.comboboxes: dict[str, ttk.Combobox] = dict()
-        self.entries: dict[str, ttk.Entry] = dict()
+        self.buttons: Button = dict()
+        self.comboboxes: Combobox = dict()
+        self.entries: dict[str, tk.Entry | ttk.Entry] = dict()
         self.frames: dict[str, ttk.Frame] = dict()
         self.labels: dict[str, ttk.Label] = dict()
         self.label_frames: dict[str, ttk.LabelFrame] = dict()
@@ -47,6 +63,7 @@ class Form(View):
         frame.rowconfigure(0, weight=1)
         frame.grid(row=0, column=0, sticky=tk.W)
 
+        self.fontdata = Font(family="Yu Gothic UI", size=10)
         # input
         self.create_label_frame(
             frame,
@@ -67,49 +84,25 @@ class Form(View):
             pady=8,
         )
 
-        self.create_input_frame()
-        self.create_output_frame()
+        self.create_input_field()
+        self.create_output_field()
 
-    def create_input_frame(self) -> None:
-        self.create_frame(
-            self.label_frames["input"],
-            "input_format_frame",
-            row=0,
-            column=0,
-            sticky=tk.W,
-        )
+    def create_input_field(self) -> None:
         self.create_frame(
             self.label_frames["input"],
             "input_text_frame",
-            row=1,
+            row=0,
             column=0,
             sticky=tk.NSEW,
         )
         self.create_frame(
             self.label_frames["input"],
             "input_btn_frame",
-            row=2,
+            row=1,
             column=0,
             sticky=tk.E,
         )
 
-        self.create_label(
-            self.frames["input_format_frame"],
-            key="input_format_label",
-            text="フォーマット",
-            row=0,
-            column=0,
-            padx=4,
-            pady=4,
-            sticky=tk.EW,
-        )
-        self.create_combobox(
-            self.frames["input_format_frame"],
-            key="input_format_combobox",
-            row=0,
-            column=1,
-            sticky=tk.EW,
-        )
         self.create_text(
             self.frames["input_text_frame"],
             key="input_text",
@@ -117,27 +110,19 @@ class Form(View):
             column=0,
             padx=5,
             height=12,
-        )
-        self.create_button(
-            self.frames["input_btn_frame"],
-            text="copy",
-            key="input_copy_btn",
-            row=0,
-            column=0,
-            pady=4,
-            sticky=tk.E,
+            fontdata=self.fontdata,
         )
         self.create_button(
             self.frames["input_btn_frame"],
             text="clear",
             key="input_clear_btn",
             row=0,
-            column=1,
+            column=0,
             pady=4,
             sticky=tk.E,
         )
 
-    def create_output_frame(self) -> None:
+    def create_output_field(self) -> None:
         self.create_frame(
             self.label_frames["output"],
             "output_format_frame",
@@ -184,6 +169,7 @@ class Form(View):
             column=0,
             padx=5,
             height=12,
+            fontdata=self.fontdata,
         )
         self.create_button(
             self.frames["output_btn_frame"],
@@ -191,15 +177,6 @@ class Form(View):
             key="output_copy_btn",
             row=0,
             column=0,
-            pady=4,
-            sticky=tk.E,
-        )
-        self.create_button(
-            self.frames["output_btn_frame"],
-            text="clear",
-            key="output_clear_btn",
-            row=0,
-            column=1,
             pady=4,
             sticky=tk.E,
         )
@@ -320,7 +297,11 @@ class Form(View):
         ipady=0,
         sticky=tk.NSEW,
     ) -> None:
-        self.labels[key] = ttk.Label(frame, text=text)
+        self.labels[key] = ttk.Label(
+            frame,
+            text=text,
+            font=self.get_font(family="Yu Gothic UI", size=10),
+        )
         self.labels[key].grid(
             row=row,
             column=column,
@@ -344,7 +325,18 @@ class Form(View):
         ipady=0,
         sticky=tk.NSEW,
     ) -> None:
-        self.label_frames[key] = ttk.LabelFrame(frame, text=label)
+        """
+        LFrameStyle = ttk.Style()
+        LFrameStyle.theme_use("default")
+        LFrameStyle.configure("Dict.TLabelframe.Label",
+        font=("Yu Gothic UI", "40", "Normal"))
+
+        #fra_Rgst = ttk.LabelFrame(root, relief="ridge",
+        # labelanchor="nw", text="LabelFrame", style="Dict.TLabelframe.Label")
+        """
+        self.label_frames[key] = ttk.LabelFrame(
+            frame, text=label, style="Dict.TLabelframe.Label"
+        )
         self.label_frames[key].grid(
             row=row,
             column=column,
@@ -361,6 +353,7 @@ class Form(View):
         key,
         row,
         column,
+        fontdata: Font,
         height=40,
         width=40,
         rowspan=1,
@@ -371,7 +364,8 @@ class Form(View):
         ipady=0,
         sticky=tk.NSEW,
     ) -> None:
-        self.texts[key] = tk.Text(frame, height=height, width=width)
+        font = self.get_font(family="Yu Gothic UI", size=10)
+        self.texts[key] = tk.Text(frame, height=height, width=width, font=font)
         self.texts[key].grid(
             row=row,
             column=column,
@@ -383,3 +377,31 @@ class Form(View):
             ipady=ipady,
             sticky=sticky,
         )
+
+    def get_font(
+        self,
+        family: str,
+        size: int,
+        slant: Literal["italic", "roman"] = "roman",
+        weight: Literal["bold", "normal"] = "normal",
+        underline: bool = False,
+        overstrike: bool = False,
+    ) -> tkinter.font.Font:
+        """
+        if not fontdata.family:
+            import os
+
+            if os.name == "nt":
+                fontdata.family = "Yu Gothic UI"
+            else:
+                fontdata.family = "System"
+        """
+        font = tkinter.font.Font(
+            family=family,
+            size=size,
+            slant=slant,
+            weight=weight,
+            underline=underline,
+            overstrike=overstrike,
+        )
+        return font
