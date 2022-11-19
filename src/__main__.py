@@ -11,7 +11,7 @@ class Application(tk.Frame):
         self.master = master
 
         self.master.resizable(height=False, width=False)
-        self.master.title('CharEncode')
+        self.master.title('ccc-py')
 
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
@@ -28,7 +28,6 @@ if __name__ == '__main__':
     root.rowconfigure(0, weight=1)
 
     encode_controller = CharEncodeController(model=Model())
-    form = Form
     app = Application(master=root)
-    app.new_tab(view=form, controller=encode_controller)  # type: ignore
+    app.new_tab(view=Form, controller=encode_controller)  # type: ignore
     app.mainloop()
