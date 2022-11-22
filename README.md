@@ -6,7 +6,7 @@ Takes a hexadecimal string and converts it to the following character codes:
 + `ASCII`
 + `ISO-8859-1`
 + `Shift_JIS`
-+ `UTF-8`
++ `UTF-8`  
 + `UTF-16`  
 
 The purpose of this project is two-fold.
