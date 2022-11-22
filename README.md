@@ -14,7 +14,7 @@ The first is to practice building applications using tkinter. The mvc model was 
 The second is that I have recently become interested in viewing and editing binary data and wanted a program that would help.
 
 ## Demo
-[demo_git](https://user-images.githubusercontent.com/37060429/202862405-3408c134-ae21-4676-be58-c59c476772ab.gif)
+![demo_git](https://user-images.githubusercontent.com/37060429/202862405-3408c134-ae21-4676-be58-c59c476772ab.gif)
 
 ## Requirements
 + Python3
