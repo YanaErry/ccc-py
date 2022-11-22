@@ -16,9 +16,8 @@ The second is that I have recently become interested in viewing and editing bina
 ## Demo
 [demo_git](https://user-images.githubusercontent.com/37060429/202862405-3408c134-ae21-4676-be58-c59c476772ab.gif)
 
-## Preparation
-+ Windows10
-+ Python3.10.2
+## Requirements
++ Python3
 
 ## License
-[license](/LICENSE)
+[MIT](/LICENSE)
